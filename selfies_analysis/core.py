@@ -20,7 +20,8 @@ from .plots import (
     plot_token_accuracy_hist,
     plot_tanimoto_similarity_hist,
     plot_mw_comparison,
-    plot_hdi_comparison
+    plot_hdi_comparison,
+    plot_molecule_grid
 )
 
 
@@ -257,6 +258,60 @@ class SELFIESAnalyzer:
         similarities = self.df['tanimoto_similarity'].tolist()
         return similarities[0] if len(similarities) == 1 else similarities
     
+    def plot_molecule_grid(self, n_samples: int = 4, 
+                          mol_size: Tuple[int, int] = (300, 300),
+                          save_dir: str = 'plots',
+                          filename: str = 'molecule_comparison_grid.png',
+                          title: Optional[str] = None,
+                          show_indices: bool = True,
+                          show_tanimoto: bool = False,
+                          rows: Optional[int] = None) -> None:
+        """
+        Plot a grid comparing real vs predicted molecules using RDKit molecular drawings.
+        
+        Parameters
+        ----------
+        n_samples : int, default=4
+            Number of molecule pairs to display in the grid
+        mol_size : Tuple[int, int], default=(300, 300)
+            Size of each molecule image in pixels (width, height)
+        save_dir : str, default='plots'
+            Directory to save the plot
+        filename : str, default='molecule_comparison_grid.png'
+            Filename for the saved plot
+        title : str, optional
+            Custom title for the plot. If None, uses default title
+        show_indices : bool, default=True
+            Whether to show sample indices in the grid
+        show_tanimoto : bool, default=False
+            Whether to display Tanimoto similarity scores for each pair
+        rows : int, optional
+            Number of rows to arrange the molecule pairs. If None, uses automatic layout.
+            
+        Raises
+        ------
+        ValueError
+            If no predicted SELFIES are available for comparison.
+        """
+        if 'pred_selfies' not in self.df.columns:
+            raise ValueError("No predicted SELFIES available for molecule grid visualization")
+        
+        # Extract pairs from dataframe
+        pairs = list(zip(self.df['real_selfies'], self.df['pred_selfies']))
+        
+        # Use the standalone plotting function
+        plot_molecule_grid(
+            selfies_pairs=pairs,
+            n_samples=n_samples,
+            mol_size=mol_size,
+            save_dir=save_dir,
+            filename=filename,
+            title=title,
+            show_indices=show_indices,
+            show_tanimoto=show_tanimoto,
+            rows=rows
+        )
+    
     def compute_all_metrics(self) -> Dict[str, any]:
         """
         Compute all available metrics.
@@ -302,7 +357,9 @@ class SELFIESAnalyzer:
         self._computed_metrics = metrics
         return metrics
     
-    def plot_all(self, save_dir: str = 'plots', prefix: str = '') -> None:
+    def plot_all(self, save_dir: str = 'plots', prefix: str = '', 
+                include_molecule_grid: bool = False, n_grid_samples: int = 4,
+                show_tanimoto_on_grid: bool = False) -> None:
         """
         Generate all available plots.
         
@@ -312,6 +369,12 @@ class SELFIESAnalyzer:
             Directory to save plots
         prefix : str
             Prefix for plot filenames
+        include_molecule_grid : bool, default=False
+            Whether to include molecular structure grid visualization
+        n_grid_samples : int, default=4
+            Number of samples to show in molecule grid (only used if include_molecule_grid=True)
+        show_tanimoto_on_grid : bool, default=False
+            Whether to show Tanimoto similarity scores on the molecule grid
         """
         os.makedirs(save_dir, exist_ok=True)
         
@@ -348,6 +411,15 @@ class SELFIESAnalyzer:
                     self.df,
                     save_dir=save_dir,
                     filename=f"{prefix}Pred_HDI_vs_Target_HDI.png" if prefix else "Pred_HDI_vs_Target_HDI.png"
+                )
+            
+            # Optional molecule grid
+            if include_molecule_grid:
+                self.plot_molecule_grid(
+                    n_samples=n_grid_samples,
+                    save_dir=save_dir,
+                    filename=f"{prefix}molecule_comparison_grid.png" if prefix else "molecule_comparison_grid.png",
+                    show_tanimoto=show_tanimoto_on_grid
                 )
     
     def get_dataframe(self) -> pd.DataFrame:

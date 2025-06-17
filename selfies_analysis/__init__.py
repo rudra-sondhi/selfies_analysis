@@ -8,6 +8,7 @@ New in this version:
 - Individual metric computation methods (get_hdi, get_tanimoto_similarity, etc.)
 - Efficient caching of computed values
 - Support for predicted vs real molecule comparisons
+- Molecular structure grid visualization (plot_molecule_grid)
 """
 
 from .core import SELFIESAnalyzer
@@ -23,10 +24,11 @@ from .plots import (
     plot_token_accuracy_hist,
     plot_tanimoto_similarity_hist,
     plot_mw_comparison,
-    plot_hdi_comparison
+    plot_hdi_comparison,
+    plot_molecule_grid
 )
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 __all__ = [
     "SELFIESAnalyzer",
     "calculate_hdi",
@@ -38,5 +40,6 @@ __all__ = [
     "plot_token_accuracy_hist",
     "plot_tanimoto_similarity_hist",
     "plot_mw_comparison",
-    "plot_hdi_comparison"
+    "plot_hdi_comparison",
+    "plot_molecule_grid"
 ]
