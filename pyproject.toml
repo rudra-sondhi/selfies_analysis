@@ -1,62 +1,6 @@
 [build-system]
-requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+requires = ["setuptools>=45", "wheel"]
 build-backend = "setuptools.build_meta"
-
-[project]
-name = "selfies-analysis"
-authors = [
-    {name = "Rudra Sondhi", email = "sondhir@mcmaster.ca"},
-]
-description = "A package for analyzing SELFIES molecular representations"
-readme = "README.md"
-license = {text = "MIT"}
-requires-python = ">=3.7"
-classifiers = [
-    "Development Status :: 4 - Beta",
-    "Intended Audience :: Science/Research",
-    "Topic :: Scientific/Engineering :: Chemistry",
-    "Topic :: Scientific/Engineering :: Artificial Intelligence",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8", 
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
-]
-keywords = ["chemistry", "molecules", "selfies", "smiles", "rdkit", "cheminformatics", "analysis"]
-dependencies = [
-    "numpy>=1.19.0",
-    "pandas>=1.1.0", 
-    "matplotlib>=3.3.0",
-    "selfies>=2.0.0",
-    "scikit-learn>=0.24.0",
-]
-dynamic = ["version"]
-
-[project.optional-dependencies]
-rdkit = ["rdkit-pypi>=2022.9.1"]
-all = ["rdkit-pypi>=2022.9.1"]
-dev = [
-    "pytest>=6.0",
-    "pytest-cov>=2.0",
-    "black>=21.0",
-    "flake8>=3.8",
-    "mypy>=0.800",
-]
-
-[project.urls]
-Homepage = "https://github.com/rudra-sondhi/selfies_analysis"
-Repository = "https://github.com/rudra-sondhi/selfies_analysis"
-"Bug Reports" = "https://github.com/rudra-sondhi/selfies_analysis/issues"
-Documentation = "https://github.com/rudra-sondhi/selfies_analysis#readme"
-
-[tool.setuptools]
-packages = ["selfies_analysis"]
-
-[tool.setuptools.dynamic]
-version = {attr = "selfies_analysis.__version__"}
 
 [tool.black]
 line-length = 88

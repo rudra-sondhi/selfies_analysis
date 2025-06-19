@@ -58,6 +58,31 @@ def calculate_hdi(selfies_str: str) -> float:
         return (2 * num_c + 2 - num_h + num_n - num_x) / 2
     except Exception:
         return np.nan
+    
+def calculate_sequence_accuracy(real_sf: str, pred_sf: str) -> float:
+    """
+    Calculate sequence-level accuracy between two SELFIES strings,
+    comparing token sequences exactly.
+
+    Parameters
+    ----------
+    real_sf : str
+        Real/target SELFIES string
+    pred_sf : str
+        Predicted SELFIES string
+
+    Returns
+    -------
+    float
+        Sequence accuracy (1.0 if exact token match, 0.0 otherwise)
+    """
+    try:
+        real_toks = re.findall(r'\[[^\]]+\]', real_sf)
+        pred_toks = re.findall(r'\[[^\]]+\]', pred_sf)
+        return float(real_toks == pred_toks)
+    except Exception:
+        return 0.0
+    
 
 
 def calculate_token_accuracy(real_sf: str, pred_sf: str) -> float:

@@ -26,13 +26,13 @@ rdkit_requirements = [
 
 setup(
     name="selfies-analysis",
-    version="0.3.0",
-    author="Rudra Sondhi",  
-    author_email="sondhir@mcmaster.ca", 
+    version="0.4.1",
+    author="Your Name",  # TODO: Replace with actual name
+    author_email="your.email@example.com",  # TODO: Replace with actual email
     description="A package for analyzing SELFIES molecular representations",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/rudra-sondhi/selfies_analysis",  # TODO: Replace with actual URL
+    url="https://github.com/yourusername/selfies_analysis",  # TODO: Replace with actual URL
     packages=find_packages(),
     classifiers=[
         "Development Status :: 4 - Beta",

@@ -258,6 +258,73 @@ class SELFIESAnalyzer:
         similarities = self.df['tanimoto_similarity'].tolist()
         return similarities[0] if len(similarities) == 1 else similarities
     
+    def get_smiles(self) -> Union[List[str], str, Dict[str, Union[List[str], str]]]:
+        """
+        Get SMILES representations for the molecules.
+        
+        Returns
+        -------
+        Union[List[str], str, Dict[str, Union[List[str], str]]]
+            - If only real SELFIES: SMILES strings for real molecules
+            - If real and predicted SELFIES: Dict with 'real' and 'predicted' keys
+            Returns single string if only one molecule, otherwise list.
+        """
+        self._ensure_smiles_and_mols()
+        
+        # Get real SMILES (filter out None values)
+        real_smiles = self.df['real_smiles'].dropna().tolist()
+        
+        # Check if we have predicted SELFIES
+        if 'pred_selfies' in self.df.columns and self.df['pred_selfies'].notna().any():
+            self._ensure_pred_smiles_and_mols()
+            
+            # Get predicted SMILES (filter out None values)
+            pred_smiles = self.df['pred_smiles'].dropna().tolist()
+            
+            # Return both as a dictionary
+            result = {
+                'real': real_smiles[0] if len(real_smiles) == 1 else real_smiles,
+                'predicted': pred_smiles[0] if len(pred_smiles) == 1 else pred_smiles
+            }
+            return result
+        else:
+            # Only real data available
+            return real_smiles[0] if len(real_smiles) == 1 else real_smiles
+    
+    def get_mol(self) -> Union[List[Optional[Chem.Mol]], Optional[Chem.Mol], Dict[str, Union[List[Optional[Chem.Mol]], Optional[Chem.Mol]]]]:
+        """
+        Get RDKit Mol objects for the molecules.
+        
+        Returns
+        -------
+        Union[List[Optional[Chem.Mol]], Optional[Chem.Mol], Dict[str, Union[List[Optional[Chem.Mol]], Optional[Chem.Mol]]]]
+            - If only real SELFIES: RDKit Mol objects for real molecules
+            - If real and predicted SELFIES: Dict with 'real' and 'predicted' keys
+            Returns single Mol object if only one molecule, otherwise list.
+            None values included for molecules that couldn't be converted.
+        """
+        self._ensure_smiles_and_mols()
+        
+        # Get real Mol objects (include None values to preserve indexing)
+        real_mols = self.df['real_mol'].tolist()
+        
+        # Check if we have predicted SELFIES
+        if 'pred_selfies' in self.df.columns and self.df['pred_selfies'].notna().any():
+            self._ensure_pred_smiles_and_mols()
+            
+            # Get predicted Mol objects (include None values)
+            pred_mols = self.df['pred_mol'].tolist()
+            
+            # Return both as a dictionary
+            result = {
+                'real': real_mols[0] if len(real_mols) == 1 else real_mols,
+                'predicted': pred_mols[0] if len(pred_mols) == 1 else pred_mols
+            }
+            return result
+        else:
+            # Only real data available
+            return real_mols[0] if len(real_mols) == 1 else real_mols
+    
     def plot_molecule_grid(self, n_samples: int = 4, 
                           mol_size: Tuple[int, int] = (300, 300),
                           save_dir: str = 'plots',
